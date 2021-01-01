@@ -35,7 +35,7 @@ RUN tar -zxf heimdall.tar.gz
 WORKDIR /heimdall/Heimdall-2.2.2
 RUN mkdir -p /config && \
     cp .env.example .env && \
-    ln -s /heimdall/Heimdall-2.2.2/database/app.sqlite /config/app.sqlite
+    ln -s /config/app.sqlite /heimdall/Heimdall-2.2.2/database/app.sqlite
 
 RUN composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 RUN php artisan key:generate
