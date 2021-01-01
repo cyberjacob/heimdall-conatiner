@@ -33,12 +33,14 @@ WORKDIR /heimdall
 RUN tar -zxf heimdall.tar.gz
 
 WORKDIR /heimdall/Heimdall-2.2.2
-RUN cp .env.example .env
+RUN mkdir -p /config && \
+    cp .env.example .env && \
+    ln -s /heimdall/Heimdall-2.2.2/database/app.sqlite /config/app.sqlite && \
+    sed -ri -e 's!/var/www/html!/heimdall/Heimdall-2.2.2/public!g' /etc/apache2/sites-available/*.conf && \
+    sed -ri -e 's!/var/www/!/heimdall/Heimdall-2.2.2/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
 RUN composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
 RUN php artisan key:generate
 #RUN npm install
 #RUN npm run production
 RUN chmod 777 -R .
-
-RUN sed -ri -e 's!/var/www/html!/heimdall/Heimdall-2.2.2/public!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!/heimdall/Heimdall-2.2.2/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
